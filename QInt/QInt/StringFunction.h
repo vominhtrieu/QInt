@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 using namespace std;
 
 //Return a string number which is result of 2^n

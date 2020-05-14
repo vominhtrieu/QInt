@@ -7,7 +7,8 @@ int main(int argc, char* argv[])
 	cin >> a;
 	cout << "b: ";
 	cin >> b;
-	cout << "a + b = " << a + b;
-
+	cout << "-a = " << a << "\n";
+	cout << "a + b = " << a + b << "\n";
+	cout << "a * b = " << a * b << "\n";
 	return 0;
 }

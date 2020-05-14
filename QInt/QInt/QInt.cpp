@@ -14,7 +14,7 @@ QInt::QInt(int n)
 	char otherElementValue = (n >> 31) ? (~0) : 0;
 	for (int i = 0; i < MaxArrayIndex; i++)
 	{
-		data[i];
+		data[i] = otherElementValue;
 	}
 }
 
@@ -45,8 +45,9 @@ QInt QInt::operator+(QInt other) const
 		//and result of previous operator
 		uint data = (this->data[i] & temp) + (other.data[i] & temp) + carry;
 		result.data[i] = data;
+
 		uint leftMostBit = (data >> 31) + (this->data[i] >> 31) + (other.data[i] >> 31);
-		result.setBit((MaxArrayIndex - i) * 32 + 31, leftMostBit);
+		result.setBit((MaxArrayIndex - i) * 32 + 31, leftMostBit % 2);
 		//If LMB is greater than 1, so there's an overflow, we must set carry to 1
 		carry = leftMostBit > 1 ? 1 : 0;
 	}
@@ -61,7 +62,30 @@ QInt QInt::operator-(QInt other) const
 
 QInt QInt::operator*(QInt other) const
 {
-	return QInt();
+	//Booth's algorithm
+	QInt A;
+	QInt Q = other;
+	char Q1 = 0;
+
+	int k = MaxBitIndex;
+	while (k >= 0)
+	{
+		//Q0Q1=10 
+		if (Q.getBit(0) && !Q1)
+			A = A - (*this);
+		//Q0Q1=01
+		else if (!Q.getBit(0) && Q1)
+			A = A + (*this);
+
+		//Shift right arithmetic [A, Q, Q1]
+		Q1 = Q.getBit(0);
+		Q = Q >> 1;
+		Q.setBit(MaxBitIndex, A.getBit(0));
+		A = A >> 1;
+		k--;
+	}
+
+	return Q;
 }
 
 QInt QInt::operator/(QInt other) const
@@ -109,7 +133,27 @@ QInt QInt::operator<<(int amount) const
 
 QInt QInt::operator>>(int amount) const
 {
-	return QInt();
+	QInt result = *this;
+
+	for (int a = 0; a < amount; a += 31)
+	{
+		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+
+		for (int i = MaxArrayIndex; i >= 0; i--)
+		{
+			if (i > 0)
+			{
+				result.data[i] >>= tempAmount;
+				result.data[i] |= (result.data[i - 1] << (32 - tempAmount));
+			}
+			else
+			{
+				result.data[i] = ((int)result.data[i]) >> tempAmount;
+			}
+		}
+	}
+
+	return result;
 }
 
 QInt QInt::rol() const
@@ -154,7 +198,11 @@ bool QInt::operator!=(QInt other) const
 
 QInt QInt::operator=(QInt other)
 {
-	return QInt();
+	for (int i = 0; i < DataSize; i++)
+	{
+		this->data[i] = other.data[i];
+	}
+	return *this;
 }
 
 QInt QInt::operator=(int other)
@@ -205,10 +253,7 @@ void QInt::fromDec(string dec)
 {
 	bool isNegative = dec[0] == '-';
 
-	for (int i = 0; i < DataSize; i++)
-	{
-		data[i] = 0;
-	}
+	QInt result;
 
 	if (isNegative)
 		dec.erase(0, 1);
@@ -220,12 +265,12 @@ void QInt::fromDec(string dec)
 	int bitIndex = 0;
 	while (dec != "0" && bitIndex <= MaxBitIndex)
 	{
-		setBit(bitIndex++, dec[dec.length() - 1] & 1);
+		result.setBit(bitIndex++, dec[dec.length() - 1] & 1);
 		dec = divideBy2(dec);
 	}
-
 	if (isNegative)
-		*this = -(*this);
+		result = -result;
+	(*this) = result;
 }
 
 void QInt::fromHex(string hex)

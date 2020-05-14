@@ -10,13 +10,10 @@ string powerOf2(int n)
 	int decimalLength = n / 29 + 1;
 
 	//Binary Array use for computing
-	uint* binaryArr = new uint[binaryLength];
+	vector<uint> binaryArr(binaryLength, 0);
 
 	//Decimal Array use for storing result
-	uint* decimalArr = new uint[decimalLength];
-
-	for (int i = 0; i < binaryLength; i++)
-		binaryArr[i] = 0;
+	vector<uint> decimalArr(decimalLength);
 
 	//These are the mostsignificant bit
 	binaryArr[binaryLength - 1] = 1 << (n % 32);
@@ -45,9 +42,7 @@ string powerOf2(int n)
 		i--;
 		ss << setw(9) << setfill('0') << decimalArr[i];
 	}
-
-	delete[] binaryArr;
-	delete[] decimalArr;
+	
 	return ss.str();
 }
 
