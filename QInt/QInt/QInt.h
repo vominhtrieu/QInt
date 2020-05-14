@@ -1,10 +1,10 @@
 #pragma once
-#define uint unsigned int
 #define DataSize 4
+#define MaxArrayIndex 3
 #define MaxBitIndex 127
+
 #include <iostream>
-#include <string>
-using namespace std;
+#include "StringFunction.h"
 
 class QInt
 {
@@ -13,15 +13,16 @@ private:
 
 public:
 	QInt();
+	QInt(int n);
 
 	/*
 		--------------------
 		---Manipulate bit---
 		--------------------
 	*/
-	//Get a bit value from specific index in range(0, DataSize)
-	char getBit(char index);
-	//Set a bit value from specific index in range(0, DataSize)
+	//Get a bit value from specific index in [0, MaxBitIndex]
+	char getBit(char index) const;
+	//Set a bit value from specific index in [0, DataSize)
 	//Value is only 0 or 1, if value is not 0 it will convert to 1
 	void setBit(char index, char value);
 
@@ -31,16 +32,16 @@ public:
 		--------------------
 	*/
 	//Add this object with the other
-	QInt operator + (QInt other);
+	QInt operator + (QInt other) const;
 	//Subtract this object with the other
-	QInt operator - (QInt other);
+	QInt operator - (QInt other) const;
 	//Multiply this object with the other
-	QInt operator * (QInt other);
+	QInt operator * (QInt other) const;
 	//Divide this object with the other
-	QInt operator / (QInt other);
+	QInt operator / (QInt other) const;
 
 	//Change sign of QInt number
-	QInt operator - ();
+	QInt operator - () const;
 
 	/*
 		--------------------
@@ -48,13 +49,13 @@ public:
 		--------------------
 	*/
 	//Bitwise AND operator
-	QInt operator & (QInt other);
+	QInt operator & (QInt other) const;
 	//Bitwise OR operator
-	QInt operator | (QInt other);
+	QInt operator | (QInt other) const;
 	//Bitwise XOR operator
-	QInt operator ^ (QInt other);
+	QInt operator ^ (QInt other) const;
 	//Bitwise NOT operator
-	QInt operator ~ ();
+	QInt operator ~ () const;
 
 	/*
 		--------------------
@@ -62,12 +63,12 @@ public:
 		--------------------
 	*/
 	//Left shift logical by amount bit(s)
-	QInt operator << (int amount);
+	QInt operator << (int amount) const;
 	//Left shift arithmetic by amount bit(s)
-	QInt operator >> (int amount);
+	QInt operator >> (int amount) const;
 	//Rotate left by 1 bit
-	QInt rol();
-	QInt ror();
+	QInt rol() const;
+	QInt ror() const;
 
 	/*
 		--------------------
@@ -75,17 +76,17 @@ public:
 		--------------------
 	*/
 	//Return is this object greater than the other
-	bool operator > (QInt other);
+	bool operator > (QInt other) const;
 	//Return is this object less than the other
-	bool operator < (QInt other);
+	bool operator < (QInt other) const;
 	//Return is this object greater or equal to the other
-	bool operator >= (QInt other);
+	bool operator >= (QInt other) const;
 	//Return is this object less or equal to the other
-	bool operator <= (QInt other);
+	bool operator <= (QInt other) const;
 	//Return is this object equal to the other
-	bool operator == (QInt other);
+	bool operator == (QInt other) const;
 	//Return is this object different to the other
-	bool operator != (QInt other);
+	bool operator != (QInt other) const;
 
 	/*
 		--------------------
@@ -103,11 +104,11 @@ public:
 		--------------------
 	*/
 	//Convert this object to binary string
-	string toBinary();
+	string toBinary() const;
 	//Convert this object to decimal string
-	string toDec();
+	string toDec() const;
 	//Convert this object to hexadecimal string
-	string toHex();
+	string toHex() const;
 	//Convert binary string to QInt object
 	void fromBinary(string bin);
 	//Convert decimal string to QInt object
@@ -123,6 +124,6 @@ public:
 	//Print this object in base 10
 	friend ostream& operator << (ostream& out, const QInt& number);
 	//Input this object in base 10
-	friend istream& operator >> (ostream& in, QInt& number);
+	friend istream& operator >> (istream& in, QInt& number);
 };
 

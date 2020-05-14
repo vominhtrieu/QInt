@@ -149,9 +149,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="QInt.cpp" />
+    <ClCompile Include="StringFunction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QInt.h" />
+    <ClInclude Include="StringFunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
