@@ -128,7 +128,26 @@ QInt QInt::operator~() const
 
 QInt QInt::operator<<(int amount) const
 {
-	return QInt();
+	QInt result = *this;
+
+	if (amount > MaxBitIndex) result = QInt();
+	
+	for (int a = 0; a < amount; a += 31)
+	{
+		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+
+		for (int i = 0; i <= MaxArrayIndex; i++)
+		{
+			result.data[i] <<= tempAmount;
+			
+			if (i < MaxArrayIndex)
+			{
+				result.data[i] |= (result.data[i + 1] >> (32 - tempAmount));
+			}
+		}
+	}
+
+	return result;
 }
 
 QInt QInt::operator>>(int amount) const
