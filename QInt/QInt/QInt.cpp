@@ -57,7 +57,9 @@ QInt QInt::operator+(QInt other) const
 
 QInt QInt::operator-(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	
+	return result + (-other);
 }
 
 QInt QInt::operator*(QInt other) const
@@ -187,6 +189,35 @@ QInt QInt::ror() const
 
 bool QInt::operator>(QInt other) const
 {
+	char signBitA = this->getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+	if (signBitA && !signBitB)
+		return false;
+	else if (!signBitA && signBitB)
+		return true;
+	else if (signBitA && signBitB)
+	{
+		for (int i = 0; i < DataSize; i++)
+		{
+			if (this->data[i] > other.data[i])
+				return false;
+			else if (this->data[i] < other.data[i])
+				return true;
+			else continue;
+		}
+	}
+	else //signBitA == signBitB == 0
+	{
+		for (int i = 0; i < DataSize; i++)
+		{
+			if (this->data[i] > other.data[i])
+				return true;
+			else if (this->data[i] < other.data[i])
+				return false;
+			else continue;
+		}
+	}
+
 	return false;
 }
 
@@ -197,7 +228,36 @@ bool QInt::operator<(QInt other) const
 
 bool QInt::operator>=(QInt other) const
 {
-	return false;
+	char signBitA = this->getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+	if (signBitA && !signBitB)
+		return false;
+	else if (!signBitA && signBitB)
+		return true;
+	else if (signBitA && signBitB)
+	{
+		for (int i = 0; i < DataSize; i++)
+		{
+			if (this->data[i] > other.data[i])
+				return false;
+			else if (this->data[i] < other.data[i])
+				return true;
+			else continue;
+		}
+	}
+	else //signBitA == signBitB == 0
+	{
+		for (int i = 0; i < DataSize; i++)
+		{
+			if (this->data[i] > other.data[i])
+				return true;
+			else if (this->data[i] < other.data[i])
+				return false;
+			else continue;
+		}
+	}
+
+	return true;
 }
 
 bool QInt::operator<=(QInt other) const
@@ -207,7 +267,13 @@ bool QInt::operator<=(QInt other) const
 
 bool QInt::operator==(QInt other) const
 {
-	return false;
+	for (int i = 0; i < DataSize; i++)
+	{
+		if (this->data[i] != other.data[i])
+			return false;
+	}
+
+	return true;
 }
 
 bool QInt::operator!=(QInt other) const
