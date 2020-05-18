@@ -110,29 +110,49 @@ QInt QInt::operator-() const
 
 QInt QInt::operator&(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] &= other.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator|(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] |= other.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator^(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] ^= other.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator~() const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] = ~result.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator<<(int amount) const
 {
+	if (amount > MaxBitIndex)
+		return 0;
 	QInt result = *this;
-
-	if (amount > MaxBitIndex) result = QInt();
 
 	for (int a = 0; a < amount; a += 31)
 	{
@@ -154,6 +174,8 @@ QInt QInt::operator<<(int amount) const
 
 QInt QInt::operator>>(int amount) const
 {
+	if (amount > MaxBitIndex)
+		return ~0;
 	QInt result = *this;
 
 	for (int a = 0; a < amount; a += 31)
@@ -177,14 +199,47 @@ QInt QInt::operator>>(int amount) const
 	return result;
 }
 
-QInt QInt::rol() const
+QInt QInt::rol(int amount) const
 {
-	return QInt();
+	QInt result = *this;
+
+	for (int a = 0; a < amount; a += 31)
+	{
+		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+		int tempData = result.data[0];
+		for (int i = 0; i <= MaxArrayIndex; i++)
+		{
+			result.data[i] <<= tempAmount;
+
+			if (i < MaxArrayIndex)
+				result.data[i] |= (result.data[i + 1] >> (32 - tempAmount));
+			else
+				result.data[i] |= (tempData >> (32 - tempAmount));
+		}
+	}
+
+	return result;
 }
 
-QInt QInt::ror() const
+QInt QInt::ror(int amount) const
 {
-	return QInt();
+	QInt result = *this;
+
+	for (int a = 0; a < amount; a += 31)
+	{
+		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+		int tempData = result.data[MaxArrayIndex];
+		for (int i = MaxArrayIndex; i >= 0; i--)
+		{
+			result.data[i] >>= tempAmount;
+			if (i > 0)
+				result.data[i] |= (result.data[i - 1] << (32 - tempAmount));
+			else
+				result.data[i] |= (tempData << (32 - tempAmount));
+		}
+	}
+
+	return result;
 }
 
 int QInt::compare(QInt other) const

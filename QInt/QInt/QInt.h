@@ -67,8 +67,8 @@ public:
 	//Left shift arithmetic by amount bit(s)
 	QInt operator >> (int amount) const;
 	//Rotate left by 1 bit
-	QInt rol() const;
-	QInt ror() const;
+	QInt rol(int amount) const;
+	QInt ror(int amount) const;
 
 	/*
 		--------------------
