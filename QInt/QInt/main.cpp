@@ -10,7 +10,20 @@ int main(int argc, char* argv[])
 	cout << "-a = " << -a << "\n";
 	cout << "a + b = " << a + b << "\n";
 	cout << "a * b = " << a * b << "\n";
-	cout << "a >= b: " << (a >= b) << "\n";
+
+	if (a < b)
+		cout << "a < b\n";
+	if (a > b)
+		cout << "a > b\n";
+	if (a <= b)
+		cout << "a <= b\n";
+	if (a >= b)
+		cout << "a >= b\n";
+	if (a == b)
+		cout << "a == b\n";
+	if (a != b)
+		cout << "a != b\n";
+
 	/*int amount;
 	cout << "amount: ";
 	cin >> amount;

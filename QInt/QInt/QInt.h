@@ -75,6 +75,7 @@ public:
 		--Compare operator--
 		--------------------
 	*/
+	int compare(QInt other) const;
 	//Return is this object greater than the other
 	bool operator > (QInt other) const;
 	//Return is this object less than the other
@@ -94,9 +95,9 @@ public:
 		--------------------
 	*/
 	//Assign other QInt object's data to this object
-	QInt operator = (QInt other);
+	QInt& operator = (QInt other);
 	//Convert int to QInt object
-	QInt operator = (int other);
+	QInt& operator = (int other);
 
 	/*
 		--------------------
