@@ -237,9 +237,9 @@ bool QInt::operator<=(QInt other) const
 	char signBitA = this->getBit(MaxBitIndex);
 	char signBitB = other.getBit(MaxBitIndex);
 	if (signBitA && !signBitB)
-		return false;
-	if (!signBitA && signBitB)
 		return true;
+	if (!signBitA && signBitB)
+		return false;
 	return (*this).compare(other) != 1;
 }
 
