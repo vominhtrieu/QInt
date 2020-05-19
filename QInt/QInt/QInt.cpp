@@ -58,7 +58,7 @@ QInt QInt::operator+(QInt other) const
 QInt QInt::operator-(QInt other) const
 {
 	QInt result = *this;
-	
+
 	return result + (-other);
 }
 
@@ -110,30 +110,50 @@ QInt QInt::operator-() const
 
 QInt QInt::operator&(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] &= other.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator|(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] |= other.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator^(QInt other) const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] ^= other.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator~() const
 {
-	return QInt();
+	QInt result = *this;
+	for (int i = 0; i < DataSize; i++)
+	{
+		result.data[i] = ~result.data[i];
+	}
+	return result;
 }
 
 QInt QInt::operator<<(int amount) const
 {
+	if (amount > MaxBitIndex)
+		return 0;
 	QInt result = *this;
 
-	if (amount > MaxBitIndex) result = QInt();
-	
 	for (int a = 0; a < amount; a += 31)
 	{
 		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
@@ -141,7 +161,7 @@ QInt QInt::operator<<(int amount) const
 		for (int i = 0; i <= MaxArrayIndex; i++)
 		{
 			result.data[i] <<= tempAmount;
-			
+
 			if (i < MaxArrayIndex)
 			{
 				result.data[i] |= (result.data[i + 1] >> (32 - tempAmount));
@@ -154,6 +174,8 @@ QInt QInt::operator<<(int amount) const
 
 QInt QInt::operator>>(int amount) const
 {
+	if (amount > MaxBitIndex)
+		return ~0;
 	QInt result = *this;
 
 	for (int a = 0; a < amount; a += 31)
@@ -177,14 +199,59 @@ QInt QInt::operator>>(int amount) const
 	return result;
 }
 
-QInt QInt::rol() const
+QInt QInt::rol(int amount) const
 {
-	return QInt();
+	QInt result = *this;
+
+	for (int a = 0; a < amount; a += 31)
+	{
+		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+		int tempData = result.data[0];
+		for (int i = 0; i <= MaxArrayIndex; i++)
+		{
+			result.data[i] <<= tempAmount;
+
+			if (i < MaxArrayIndex)
+				result.data[i] |= (result.data[i + 1] >> (32 - tempAmount));
+			else
+				result.data[i] |= (tempData >> (32 - tempAmount));
+		}
+	}
+
+	return result;
 }
 
-QInt QInt::ror() const
+QInt QInt::ror(int amount) const
 {
-	return QInt();
+	QInt result = *this;
+
+	for (int a = 0; a < amount; a += 31)
+	{
+		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+		int tempData = result.data[MaxArrayIndex];
+		for (int i = MaxArrayIndex; i >= 0; i--)
+		{
+			result.data[i] >>= tempAmount;
+			if (i > 0)
+				result.data[i] |= (result.data[i - 1] << (32 - tempAmount));
+			else
+				result.data[i] |= (tempData << (32 - tempAmount));
+		}
+	}
+
+	return result;
+}
+
+int QInt::compare(QInt other) const
+{
+	for (int i = 0; i < DataSize; i++)
+	{
+		if (this->data[i] > other.data[i])
+			return 1;
+		if (this->data[i] < other.data[i])
+			return -1;
+	}
+	return 0;
 }
 
 bool QInt::operator>(QInt other) const
@@ -193,37 +260,20 @@ bool QInt::operator>(QInt other) const
 	char signBitB = other.getBit(MaxBitIndex);
 	if (signBitA && !signBitB)
 		return false;
-	else if (!signBitA && signBitB)
+	if (!signBitA && signBitB)
 		return true;
-	else if (signBitA && signBitB)
-	{
-		for (int i = 0; i < DataSize; i++)
-		{
-			if (this->data[i] > other.data[i])
-				return false;
-			else if (this->data[i] < other.data[i])
-				return true;
-			else continue;
-		}
-	}
-	else //signBitA == signBitB == 0
-	{
-		for (int i = 0; i < DataSize; i++)
-		{
-			if (this->data[i] > other.data[i])
-				return true;
-			else if (this->data[i] < other.data[i])
-				return false;
-			else continue;
-		}
-	}
-
-	return false;
+	return (*this).compare(other) == 1;
 }
 
 bool QInt::operator<(QInt other) const
 {
-	return false;
+	char signBitA = this->getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+	if (signBitA && !signBitB)
+		return true;
+	if (!signBitA && signBitB)
+		return false;
+	return (*this).compare(other) == -1;
 }
 
 bool QInt::operator>=(QInt other) const
@@ -232,37 +282,20 @@ bool QInt::operator>=(QInt other) const
 	char signBitB = other.getBit(MaxBitIndex);
 	if (signBitA && !signBitB)
 		return false;
-	else if (!signBitA && signBitB)
+	if (!signBitA && signBitB)
 		return true;
-	else if (signBitA && signBitB)
-	{
-		for (int i = 0; i < DataSize; i++)
-		{
-			if (this->data[i] > other.data[i])
-				return false;
-			else if (this->data[i] < other.data[i])
-				return true;
-			else continue;
-		}
-	}
-	else //signBitA == signBitB == 0
-	{
-		for (int i = 0; i < DataSize; i++)
-		{
-			if (this->data[i] > other.data[i])
-				return true;
-			else if (this->data[i] < other.data[i])
-				return false;
-			else continue;
-		}
-	}
-
-	return true;
+	return (*this).compare(other) != -1;
 }
 
 bool QInt::operator<=(QInt other) const
 {
-	return false;
+	char signBitA = this->getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+	if (signBitA && !signBitB)
+		return true;
+	if (!signBitA && signBitB)
+		return false;
+	return (*this).compare(other) != 1;
 }
 
 bool QInt::operator==(QInt other) const
@@ -278,10 +311,16 @@ bool QInt::operator==(QInt other) const
 
 bool QInt::operator!=(QInt other) const
 {
+	for (int i = 0; i < DataSize; i++)
+	{
+		if (this->data[i] != other.data[i])
+			return true;
+	}
+
 	return false;
 }
 
-QInt QInt::operator=(QInt other)
+QInt& QInt::operator=(QInt other)
 {
 	for (int i = 0; i < DataSize; i++)
 	{
@@ -290,9 +329,15 @@ QInt QInt::operator=(QInt other)
 	return *this;
 }
 
-QInt QInt::operator=(int other)
+QInt& QInt::operator=(int other)
 {
-	return QInt();
+	data[MaxArrayIndex] = other;
+	char otherElementValue = (other >> 31) ? (~0) : 0;
+	for (int i = 0; i < MaxArrayIndex; i++)
+	{
+		data[i] = otherElementValue;
+	}
+	return (*this);
 }
 
 string QInt::toBinary() const
