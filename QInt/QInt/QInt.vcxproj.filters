@@ -24,6 +24,9 @@
     <ClCompile Include="StringFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommandLineArguments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QInt.h">
@@ -32,5 +35,16 @@
     <ClInclude Include="StringFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommandLineArguments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="output.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

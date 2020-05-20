@@ -104,8 +104,13 @@ QInt QInt::operator-() const
 		temp.data[i] = ~data[i];
 	}
 
-	temp = temp + 1;
+	temp = temp + (QInt)1;
 	return temp;
+}
+
+QInt::operator int() const
+{
+	return data[MaxArrayIndex];
 }
 
 QInt QInt::operator&(QInt other) const
@@ -347,7 +352,10 @@ string QInt::toBinary() const
 	{
 		result.push_back(getBit(i) + '0');
 	}
-	return result;
+	uint first = result.find_first_not_of('0');
+	if (first >= MaxBitIndex)
+		return "0";
+	return result.substr(first);;
 }
 
 string QInt::toDec() const
