@@ -3,7 +3,6 @@
 
 int main(int argc, char* argv[])
 {
-	cout << ((QInt)0).toBinary() << "\n";
 	if (argc != 3)
 		return 0;
 
@@ -36,6 +35,6 @@ int main(int argc, char* argv[])
 
 	inputFile.close();
 	outputFile.close();
-
+  
 	return 0;
 }

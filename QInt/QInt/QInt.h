@@ -39,6 +39,8 @@ public:
 	QInt operator * (QInt other) const;
 	//Divide this object with the other
 	QInt operator / (QInt other) const;
+	//Modulo this object with other
+	QInt operator % (QInt other) const;
 
 	//Change sign of QInt number
 	QInt operator - () const;
