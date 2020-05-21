@@ -44,6 +44,8 @@ public:
 
 	//Change sign of QInt number
 	QInt operator - () const;
+	//Cast QInt to int
+	operator int() const;
 
 	/*
 		--------------------

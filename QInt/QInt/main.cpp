@@ -1,46 +1,40 @@
-#include "QInt.h"
+﻿#include <sstream>
+#include "CommandLineArguments.h"
 
 int main(int argc, char* argv[])
 {
-	QInt a, b;
-	cout << "a: ";
-	cin >> a;
-	cout << "b: ";
-	cin >> b;
-	cout << "-a = " << -a << "\n";
-	cout << "a + b = " << a + b << "\n";
-	cout << "a - b = " << a - b << "\n";
-	cout << "a * b = " << a * b << "\n";
-	cout << "a / b = " << a / b << "\n";
-	cout << "a % b = " << a % b << "\n";
+	if (argc != 3)
+		return 0;
 
-	//if (a < b)
-	//	cout << "a < b\n";
-	//if (a > b)
-	//	cout << "a > b\n";
-	//if (a <= b)
-	//	cout << "a <= b\n";
-	//if (a >= b)
-	//	cout << "a >= b\n";
-	//if (a == b)
-	//	cout << "a == b\n";
-	//if (a != b)
-	//	cout << "a != b\n";
+	//argv[0] executable file name, argv[1] input file name, argv[2] output file name
+	ifstream inputFile(argv[1]);
+	ofstream outputFile(argv[2]);
+	if (!inputFile || !outputFile)
+		return 0;
 
-	//int amount;
-	//cout << "Shift/Rotate amount: ";
-	//cin >> amount;
-	cout << "a = " << a.toBinary() << "\n";
-	cout << "b = " << b.toBinary() << "\n";
-	//cout << "a <<  " << amount << " = " << (a << amount).toBinary() << "\n";
-	//cout << "a >>  " << amount << " = " << (a >> amount).toBinary() << "\n";
-	//cout << "a rol " << amount << " = " << (a.rol(amount).toBinary()) << "\n";
-	//cout << "a ror " << amount << " = " << (a.ror(amount).toBinary()) << "\n";
+	string tempLine;
+	string tempArg;
+	while (!inputFile.eof())
+	{
+		try 
+		{
+		getline(inputFile, tempLine);
+		vector<string> arguments;
+		stringstream ss(tempLine);
+		while (ss >> tempArg)
+		{
+			arguments.push_back(tempArg);
+		}
+		handleArgument(outputFile, arguments);
+		}
+		catch (...)
+		{
+			outputFile << "\n";
+		}
+	}
 
-	//cout << "a & b = " << (a & b).toBinary() << "\n";
-	//cout << "a | b = " << (a | b).toBinary() << "\n";
-	//cout << "a ^ b = " << (a ^ b).toBinary() << "\n";
-	//cout << "~a = " << (~a).toBinary() << "\n";
-
+	inputFile.close();
+	outputFile.close();
+  
 	return 0;
 }
