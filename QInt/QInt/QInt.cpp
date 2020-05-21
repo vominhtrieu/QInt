@@ -93,7 +93,7 @@ QInt QInt::operator*(QInt other) const
 QInt QInt::operator/(QInt other) const
 {
 	//throw exception id other == 0
-	if (other == 0)
+	if (other == (QInt)0)
 		throw "Division by zero";
 
 	//Restoring Division Algorithm
@@ -141,7 +141,7 @@ QInt QInt::operator/(QInt other) const
 QInt QInt::operator % (QInt other) const
 {
 	//throw exception id other == 0
-	if (other == 0)
+	if (other == (QInt)0)
 		throw "Division by zero";
 
 	//Restoring Division Algorithm
