@@ -100,22 +100,68 @@ QInt QInt::operator/(QInt other) const
 	QInt result = *this;
 	QInt remainder;
 
-	/*if (result.getBit(MaxBitIndex))
-		return (-result / -other);*/
+	char signBitA = result.getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+
+	if (signBitA && signBitB)
+		return (-*this) / (-other);
+	if (signBitA)
+		return -((-*this) / other);
+	if (signBitB)
+		return -(*this / -other);
 
 	if (result < other)
-	{
-		if (result.getBit(MaxBitIndex) && other.getBit(MaxBitIndex))
-			return (-result / -other);
-		if (result.getBit(MaxBitIndex))
-			return -(-result / other);
 		return QInt();
+
+	remainder = signBitA ? -1 : 0;
+	int k = MaxBitIndex;
+	while (k >= 0)
+	{
+		remainder = remainder << 1;
+		remainder.setBit(0, result.getBit(MaxBitIndex));
+		result = result << 1;
+		remainder = remainder - other;
+
+		if (remainder.getBit(MaxBitIndex))
+		{
+			result.setBit(0, 0);
+			remainder = remainder + other;
+		}
+		else
+			result.setBit(0, 1);
+
+		k -= 1;
 	}
+	//if (signBitA || signBitB)
+	//	result = -result;
 
-	/*if (other.getBit(MaxBitIndex))
-		return -(result / -other);*/
+	return result;
+}
 
-	remainder = result.getBit(MaxBitIndex) ? -1 : 0;
+QInt QInt::operator % (QInt other) const
+{
+	//throw exception id other == 0
+	if (other == 0)
+		throw "Division by zero";
+
+	//Restoring Division Algorithm
+	QInt result = *this;
+	QInt remainder;
+
+	char signBitA = result.getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+
+	if (signBitA && signBitB)
+		return -((-*this) % (-other));
+	if (signBitA)
+		return -((-*this) % other);
+	if (signBitB)
+		return (*this % -other);
+
+	if (result < other)
+		return result;
+
+	remainder = signBitA ? -1 : 0;
 	int k = MaxBitIndex;
 	while (k >= 0)
 	{
@@ -135,53 +181,7 @@ QInt QInt::operator/(QInt other) const
 		k -= 1;
 	}
 
-	return result;
-}
-
-QInt QInt::operator % (QInt other) const
-{
-	////throw exception id other == 0
-	//if (other == 0)
-	//	throw "Division by zero";
-
-	//QInt result = *this;
-	//QInt remainder;
-
-	//if (result == other)
-	//	return QInt();
-
-	//if (result == 0)
-	//	return other;
-
-	//if (result < 0)
-	//	return -(-result % -other);
-	//
-	//if (result < other)
-	//	return result;
-
-	//remainder = 0;
-	//int k = MaxBitIndex + 1;
-	//while (k > 0)
-	//{
-	//	remainder = remainder << 1;
-	//	remainder.setBit(0, result.getBit(MaxBitIndex));
-	//	result = result << 1;
-	//	remainder = other > 0 ? remainder - other : remainder + other;
-
-	//	if (remainder < 0)
-	//	{
-	//		result.setBit(0, 0);
-	//		remainder = other > 0 ? remainder + other : remainder - other;
-	//	}
-	//	else
-	//		result.setBit(0, 1);
-
-	//	k -= 1;
-	//}
-
-	//return remainder;
-
-	return QInt();
+	return remainder;
 }
 
 QInt QInt::operator-() const
