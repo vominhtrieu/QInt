@@ -16,16 +16,16 @@ int main(int argc, char* argv[])
 	string tempArg;
 	while (!inputFile.eof())
 	{
-		try 
+		try
 		{
-		getline(inputFile, tempLine);
-		vector<string> arguments;
-		stringstream ss(tempLine);
-		while (ss >> tempArg)
-		{
-			arguments.push_back(tempArg);
-		}
-		handleArgument(outputFile, arguments);
+			getline(inputFile, tempLine);
+			vector<string> arguments;
+			stringstream ss(tempLine);
+			while (ss >> tempArg)
+			{
+				arguments.push_back(tempArg);
+			}
+			handleArgument(outputFile, arguments);
 		}
 		catch (...)
 		{
@@ -35,6 +35,6 @@ int main(int argc, char* argv[])
 
 	inputFile.close();
 	outputFile.close();
-  
+
 	return 0;
 }
