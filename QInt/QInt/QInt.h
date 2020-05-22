@@ -45,7 +45,6 @@ public:
 	//Change sign of QInt number
 	QInt operator - () const;
 	//Cast QInt to int
-	operator int() const;
 
 	/*
 		--------------------
@@ -120,6 +119,7 @@ public:
 	void fromDec(string dec);
 	//Convert hexadecimal string to QInt object
 	void fromHex(string hex);
+	int toInt();
 
 	/*
 		--------------------

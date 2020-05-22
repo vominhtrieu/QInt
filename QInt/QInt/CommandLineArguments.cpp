@@ -51,11 +51,11 @@ void handleBinaryOperator(ofstream& outputFile, vector<string>& arguments)
 		break;
 		// Operator left shift <<
 	case '<':
-		result = a << b;
+		result = a << b.toInt();
 		break;
 		// Operator right shift >>
 	case '>':
-		result = a >> b;
+		result = a >> b.toInt();
 		break;
 	default:
 		break;

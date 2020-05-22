@@ -11,7 +11,7 @@ QInt::QInt()
 QInt::QInt(int n)
 {
 	data[MaxArrayIndex] = n;
-	char otherElementValue = (n >> 31) ? (~0) : 0;
+	char otherElementValue = (n >> 31) ? (-1) : 0;
 	for (int i = 0; i < MaxArrayIndex; i++)
 	{
 		data[i] = otherElementValue;
@@ -93,7 +93,7 @@ QInt QInt::operator*(QInt other) const
 QInt QInt::operator/(QInt other) const
 {
 	//throw exception id other == 0
-	if (other == (QInt)0)
+	if (other == 0)
 		throw "Division by zero";
 
 	//Restoring Division Algorithm
@@ -141,7 +141,7 @@ QInt QInt::operator/(QInt other) const
 QInt QInt::operator % (QInt other) const
 {
 	//throw exception id other == 0
-	if (other == (QInt)0)
+	if (other == 0)
 		throw "Division by zero";
 
 	//Restoring Division Algorithm
@@ -195,11 +195,6 @@ QInt QInt::operator-() const
 
 	temp = temp + (QInt)1;
 	return temp;
-}
-
-QInt::operator int() const
-{
-	return data[MaxArrayIndex];
 }
 
 QInt QInt::operator&(QInt other) const
@@ -449,22 +444,29 @@ string QInt::toBinary() const
 
 string QInt::toDec() const
 {
-	string result = "0";
 	QInt temp = getBit(MaxBitIndex) ? (-(*this)) : (*this);
 
-	for (int i = MaxBitIndex; i >= 0; i--)
+	vector<int> resultArr;
+	while (temp > 0)
 	{
-		char bit = temp.getBit(i);
-		if (bit)
-		{
-			string p = powerOf2(i);
-			result = addStringNumber(result, p);
-		}
+		resultArr.push_back((temp % 1000000000).toInt());
+		temp = temp / 1000000000;
+	}
+
+	stringstream ss;
+
+	if (resultArr.size() == 0)
+		return "0";
+	ss << resultArr[resultArr.size() - 1];
+
+	for (int i = resultArr.size() - 2; i >= 0; i--)
+	{
+		ss << setw(9) << setfill('0') << resultArr[i];
 	}
 
 	if (getBit(MaxBitIndex))
-		return "-" + result;
-	return result;
+		return "-" + ss.str();
+	return ss.str();
 }
 
 string QInt::toHex() const
@@ -567,6 +569,11 @@ void QInt::fromHex(string hex)
 	}
 
 	(*this) = result;
+}
+
+int QInt::toInt()
+{
+	return data[MaxArrayIndex];
 }
 
 ostream& operator<<(ostream& out, const QInt& number)

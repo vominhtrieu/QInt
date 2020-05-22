@@ -1,50 +1,5 @@
-#include "StringFunction.h"
 #pragma once
-
-string powerOf2(int n)
-{
-	//A unsigned int is 32 bit. We need to determine how many int element we need
-	int binaryLength = n / 32 + 1;
-	//2^(29*n) requires n int element to display data.
-	//Because 2^29 is a number with 9 character and an int can display only 10 character at most
-	int decimalLength = n / 29 + 1;
-
-	//Binary Array use for computing
-	vector<uint> binaryArr(binaryLength, 0);
-
-	//Decimal Array use for storing result
-	vector<uint> decimalArr(decimalLength);
-
-	//These are the mostsignificant bit
-	binaryArr[binaryLength - 1] = 1 << (n % 32);
-
-	int i = 0;
-	while (binaryLength > 0)
-	{
-		ulong num = 0;
-		for (int j = binaryLength - 1; j >= 0; j--)
-		{
-			num = (num << 32) | binaryArr[j];
-			binaryArr[j] = num / 1000000000;
-			num %= 1000000000;
-		}
-
-		decimalArr[i++] = (uint)num;
-		while (binaryLength > 0 && binaryArr[binaryLength - 1] == 0)
-			binaryLength--;
-	}
-
-	stringstream ss;
-	i--;
-	ss << decimalArr[i];
-	while (i > 0)
-	{
-		i--;
-		ss << setw(9) << setfill('0') << decimalArr[i];
-	}
-	
-	return ss.str();
-}
+#include "StringFunction.h"
 
 string divideBy2(string num)
 {
