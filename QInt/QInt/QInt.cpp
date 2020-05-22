@@ -469,10 +469,9 @@ string QInt::toDec() const
 
 string QInt::toHex() const
 {
-	char sign = getBit(MaxBitIndex);
 	string result = "";
 
-	QInt temp = sign ? -(*this) : *this;
+	QInt temp = *this;
 
 	int k = MaxBitIndex;
 	while (k > 0)
@@ -496,9 +495,6 @@ string QInt::toHex() const
 
 	result = result.substr(first);
 
-	if (sign)
-		result = '-' + result;
-
 	return result;
 }
 
@@ -510,11 +506,12 @@ void QInt::fromBinary(string bin)
 
 	for (int i = bin.length() - 1; i >= 0; i--)
 	{
-		if (bin[i])
-		setBit(bitIndex++, bin[i]);
+		if (bin[i] == '1')
+			setBit(bitIndex, 1);
+		bitIndex++;
 	}
 
-	if (bin[0])
+	if (bin[0] == '1')
 	{
 		while (bitIndex >= MaxBitIndex)
 		{
@@ -549,12 +546,8 @@ void QInt::fromDec(string dec)
 
 void QInt::fromHex(string hex)
 {
-	bool isNegative = hex[0] == '-';
-
 	QInt result;
 
-	if (isNegative)
-		hex.erase(0, 1);
 	hex.erase(0, hex.find_first_not_of('0'));
 
 	int hexIndex = 0;
@@ -572,9 +565,6 @@ void QInt::fromHex(string hex)
 
 		hexIndex++;
 	}
-
-	if (isNegative)
-		result = -result;
 
 	(*this) = result;
 }
