@@ -93,7 +93,7 @@ void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
 	else if (op == "rol")
 		result = num.rol(1);
 	else if (op == "ror")
-		result = num.ror(2);
+		result = num.ror(1);
 	else
 		return;
 

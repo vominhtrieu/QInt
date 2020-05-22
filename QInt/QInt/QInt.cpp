@@ -439,7 +439,7 @@ string QInt::toBinary() const
 	uint first = result.find_first_not_of('0');
 	if (first >= MaxBitIndex)
 		return "0";
-	return result.substr(first);;
+	return result.substr(first);
 }
 
 string QInt::toDec() const
@@ -471,11 +471,55 @@ string QInt::toDec() const
 
 string QInt::toHex() const
 {
-	return string();
+	string result = "";
+
+	QInt temp = *this;
+
+	int k = MaxBitIndex;
+	while (k > 0)
+	{
+		k -= 4;
+		uint num = (temp >> (MaxBitIndex - 3)).data[MaxArrayIndex] & 15;
+		char ch;
+		
+		if (num < 10)
+			ch = num + '0';
+		else
+			ch = num + 'A' - 10;
+
+		result.push_back(ch);
+		temp = temp << 4;
+	}
+
+	uint first = result.find_first_not_of('0');
+	if (first >= MaxBitIndex)
+		return "0";
+
+	result = result.substr(first);
+
+	return result;
 }
 
 void QInt::fromBinary(string bin)
 {
+	*this = QInt();
+	
+	int bitIndex = 0;
+
+	for (int i = bin.length() - 1; i >= 0; i--)
+	{
+		if (bin[i] == '1')
+			setBit(bitIndex, 1);
+		bitIndex++;
+	}
+
+	if (bin[0] == '1')
+	{
+		while (bitIndex >= MaxBitIndex)
+		{
+			setBit(bitIndex++, 1);
+		}
+	}
 }
 
 void QInt::fromDec(string dec)
@@ -504,6 +548,27 @@ void QInt::fromDec(string dec)
 
 void QInt::fromHex(string hex)
 {
+	QInt result;
+
+	hex.erase(0, hex.find_first_not_of('0'));
+
+	int hexIndex = 0;
+	while (hexIndex < hex.length())
+	{
+		uint bits;
+		if (hex[hexIndex] >= '0' && hex[hexIndex] <= '9')
+			bits = hex[hexIndex] - '0';
+		else
+			bits = hex[hexIndex] - 'A' + 10;
+				
+		result.data[MaxArrayIndex] |= bits;
+		if (hexIndex < hex.length() - 1)
+			result = result << 4;
+
+		hexIndex++;
+	}
+
+	(*this) = result;
 }
 
 int QInt::toInt()
