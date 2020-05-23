@@ -295,7 +295,7 @@ QInt QInt::rol(int amount) const
 	for (int a = 0; a < amount; a += 31)
 	{
 		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
-		int tempData = result.data[0];
+		uint tempData = result.data[0];
 		for (int i = 0; i <= MaxArrayIndex; i++)
 		{
 			result.data[i] <<= tempAmount;
@@ -437,7 +437,7 @@ string QInt::toBinary() const
 		result.push_back(getBit(i) + '0');
 	}
 	uint first = result.find_first_not_of('0');
-	if (first >= MaxBitIndex)
+	if (first > MaxBitIndex)
 		return "0";
 	return result.substr(first);
 }

@@ -86,7 +86,7 @@ void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
 		num.fromHex(arguments[2]);
 	else
 		return;
-
+	cout << num.toBinary() << "\n";
 	//Perform operation
 	if (op == "~")
 		result = ~num;
@@ -96,6 +96,7 @@ void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
 		result = num.ror(1);
 	else
 		return;
+	cout << result.toBinary() << "\n";
 
 	//Output to file in specific base
 	if (base == "2")
