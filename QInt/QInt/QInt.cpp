@@ -317,7 +317,7 @@ QInt QInt::ror(int amount) const
 	for (int a = 0; a < amount; a += 31)
 	{
 		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
-		int tempData = result.data[MaxArrayIndex];
+		uint tempData = result.data[MaxArrayIndex];
 		for (int i = MaxArrayIndex; i >= 0; i--)
 		{
 			result.data[i] >>= tempAmount;

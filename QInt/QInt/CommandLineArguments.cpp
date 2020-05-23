@@ -5,7 +5,6 @@ void handleBinaryOperator(ofstream& outputFile, vector<string>& arguments)
 	string base = arguments[0];
 
 	QInt a, b, result;
-
 	//Read number in specific base
 	if (base == "2")
 	{
@@ -51,11 +50,11 @@ void handleBinaryOperator(ofstream& outputFile, vector<string>& arguments)
 		break;
 		// Operator left shift <<
 	case '<':
-		result = a << b.toInt();
+		result = a << stoi(arguments[3]);
 		break;
 		// Operator right shift >>
 	case '>':
-		result = a >> b.toInt();
+		result = a >> stoi(arguments[3]);
 		break;
 	default:
 		break;
@@ -86,7 +85,7 @@ void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
 		num.fromHex(arguments[2]);
 	else
 		return;
-	cout << num.toBinary() << "\n";
+
 	//Perform operation
 	if (op == "~")
 		result = ~num;
@@ -96,7 +95,6 @@ void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
 		result = num.ror(1);
 	else
 		return;
-	cout << result.toBinary() << "\n";
 
 	//Output to file in specific base
 	if (base == "2")
