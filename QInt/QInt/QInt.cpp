@@ -277,7 +277,7 @@ QInt QInt::operator<<(int amount) const
 QInt QInt::operator>>(int amount) const
 {
 	if (amount > MaxBitIndex)
-		return ~0;
+		return -1;
 	QInt result = *this;
 
 	for (int a = 0; a < amount; a += 31)
@@ -434,7 +434,7 @@ QInt& QInt::operator=(QInt other)
 QInt& QInt::operator=(int other)
 {
 	data[MaxArrayIndex] = other;
-	char otherElementValue = (other >> 31) ? (~0) : 0;
+	char otherElementValue = (other >> 31) ? -1 : 0;
 	for (int i = 0; i < MaxArrayIndex; i++)
 	{
 		data[i] = otherElementValue;
@@ -513,6 +513,11 @@ string QInt::toHex() const
 	return result;
 }
 
+int QInt::toInt()
+{
+	return data[MaxArrayIndex];
+}
+
 void QInt::fromBinary(string bin)
 {
 	*this = QInt();
@@ -582,11 +587,6 @@ void QInt::fromHex(string hex)
 	}
 
 	(*this) = result;
-}
-
-int QInt::toInt()
-{
-	return data[MaxArrayIndex];
 }
 
 ostream& operator<<(ostream& out, const QInt& number)
