@@ -36,7 +36,7 @@ QInt QInt::operator+(QInt other) const
 	QInt result;
 	uint temp = ~(1 << 31);
 	uint carry = 0;
-
+	bool isZero = true;
 	for (int i = MaxArrayIndex; i >= 0; i--)
 	{
 		//To use ability of int in c++, we use build-in operator + of int
@@ -51,7 +51,9 @@ QInt QInt::operator+(QInt other) const
 		//If LMB is greater than 1, so there's an overflow, we must set carry to 1
 		carry = leftMostBit > 1 ? 1 : 0;
 	}
-
+	if ((this->getBit(MaxBitIndex) && other.getBit(MaxBitIndex) && !result.getBit(MaxBitIndex))
+		|| (!this->getBit(MaxBitIndex) && !other.getBit(MaxBitIndex) && result.getBit(MaxBitIndex)))
+		throw "Overflow";
 	return result;
 }
 
@@ -85,6 +87,18 @@ QInt QInt::operator*(QInt other) const
 		Q.setBit(MaxBitIndex, A.getBit(0));
 		A = A >> 1;
 		k--;
+	}
+
+
+	if (Q.getBit(MaxBitIndex))
+	{
+		if (A != -1 || this->getBit(MaxBitIndex) == other.getBit(MaxBitIndex))
+			throw "Overflow";
+	}
+	else
+	{
+		if (A != 0)
+			throw "Overflow";
 	}
 
 	return Q;
@@ -169,7 +183,6 @@ QInt QInt::operator % (QInt other) const
 		remainder.setBit(0, result.getBit(MaxBitIndex));
 		result = result << 1;
 		remainder = remainder - other;
-
 		if (remainder.getBit(MaxBitIndex))
 		{
 			result.setBit(0, 0);
@@ -481,7 +494,7 @@ string QInt::toHex() const
 		k -= 4;
 		uint num = (temp >> (MaxBitIndex - 3)).data[MaxArrayIndex] & 15;
 		char ch;
-		
+
 		if (num < 10)
 			ch = num + '0';
 		else
@@ -503,7 +516,7 @@ string QInt::toHex() const
 void QInt::fromBinary(string bin)
 {
 	*this = QInt();
-	
+
 	int bitIndex = 0;
 
 	for (int i = bin.length() - 1; i >= 0; i--)
@@ -560,7 +573,7 @@ void QInt::fromHex(string hex)
 			bits = hex[hexIndex] - '0';
 		else
 			bits = hex[hexIndex] - 'A' + 10;
-				
+
 		result.data[MaxArrayIndex] |= bits;
 		if (hexIndex < hex.length() - 1)
 			result = result << 4;

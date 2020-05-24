@@ -24,49 +24,55 @@ void handleBinaryOperator(ofstream& outputFile, vector<string>& arguments)
 	else
 		return;
 
-	//Perform operation
-	switch (arguments[2][0])
+	try {
+		//Perform operation
+		switch (arguments[2][0])
+		{
+		case '+':
+			result = a + b;
+			break;
+		case '-':
+			result = a - b;
+			break;
+		case '*':
+			result = a * b;
+			break;
+		case '/':
+			result = a / b;
+			break;
+		case '&':
+			result = a & b;
+			break;
+		case '|':
+			result = a | b;
+			break;
+		case '^':
+			result = a ^ b;
+			break;
+			// Operator left shift <<
+		case '<':
+			result = a << stoi(arguments[3]);
+			break;
+			// Operator right shift >>
+		case '>':
+			result = a >> stoi(arguments[3]);
+			break;
+		default:
+			break;
+		}
+	}
+	catch (...)
 	{
-	case '+':
-		result = a + b;
-		break;
-	case '-':
-		result = a - b;
-		break;
-	case '*':
-		result = a * b;
-		break;
-	case '/':
-		result = a / b;
-		break;
-	case '&':
-		result = a & b;
-		break;
-	case '|':
-		result = a | b;
-		break;
-	case '^':
-		result = a ^ b;
-		break;
-		// Operator left shift <<
-	case '<':
-		result = a << stoi(arguments[3]);
-		break;
-		// Operator right shift >>
-	case '>':
-		result = a >> stoi(arguments[3]);
-		break;
-	default:
-		break;
+		return;
 	}
 
 	//Output to file in specific base
 	if (base == "2")
-		outputFile << result.toBinary() << "\n";
+		outputFile << result.toBinary();
 	else if (base == "10")
-		outputFile << result.toDec() << "\n";
+		outputFile << result.toDec();
 	else if  (base =="16")
-		outputFile << result.toHex() << "\n";
+		outputFile << result.toHex();
 }
 
 void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
@@ -98,11 +104,11 @@ void handleUnaryOperator(ofstream& outputFile, vector<string>& arguments)
 
 	//Output to file in specific base
 	if (base == "2")
-		outputFile << result.toBinary() << "\n";
+		outputFile << result.toBinary();
 	else if (base == "10")
-		outputFile << result.toDec() << "\n";
+		outputFile << result.toDec();
 	else if (base == "16")
-		outputFile << result.toHex() << "\n";
+		outputFile << result.toHex();
 }
 
 void handleBaseConvertingOperator(ofstream& outputFile, vector<string>& arguments)
@@ -121,11 +127,11 @@ void handleBaseConvertingOperator(ofstream& outputFile, vector<string>& argument
 
 	//Output to file in specific base
 	if (arguments[1] == "2")
-		outputFile << num.toBinary() << "\n";
+		outputFile << num.toBinary();
 	else if (arguments[1] == "10")
-		outputFile << num.toDec() << "\n";
+		outputFile << num.toDec();
 	else if (arguments[1] == "16")
-		outputFile << num.toHex() << "\n";
+		outputFile << num.toHex();
 }
 
 void handleArgument(ofstream& outputFile, vector<string>& arguments)

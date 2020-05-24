@@ -29,10 +29,10 @@ int main(int argc, char* argv[])
 			}
 			handleArgument(outputFile, arguments);
 		}
-		catch (...)
+		catch (exception e)
 		{
-			outputFile << "\n";
 		}
+		outputFile << "\n";
 	}
 
 	inputFile.close();
