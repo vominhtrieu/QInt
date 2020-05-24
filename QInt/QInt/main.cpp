@@ -21,6 +21,8 @@ int main(int argc, char* argv[])
 		try
 		{
 			getline(inputFile, tempLine);
+			if (tempLine.length() == 0)
+				break;
 			vector<string> arguments;
 			stringstream ss(tempLine);
 			while (ss >> tempArg)
