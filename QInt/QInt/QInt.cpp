@@ -117,6 +117,12 @@ QInt QInt::operator/(QInt other) const
 	char signBitA = result.getBit(MaxBitIndex);
 	char signBitB = other.getBit(MaxBitIndex);
 
+	QInt minQInt = 1;
+	minQInt = minQInt << MaxBitIndex;
+
+	if (*this == minQInt)
+		return (QInt)2 * ((*this >> 1) / other);
+
 	if (signBitA && signBitB)
 		return (-*this) / (-other);
 	if (signBitA)
@@ -127,7 +133,7 @@ QInt QInt::operator/(QInt other) const
 	if (result < other)
 		return QInt();
 
-	remainder = signBitA ? -1 : 0;
+	remainder = 0;
 	int k = MaxBitIndex;
 	while (k >= 0)
 	{
@@ -146,8 +152,6 @@ QInt QInt::operator/(QInt other) const
 
 		k -= 1;
 	}
-	//if (signBitA || signBitB)
-	//	result = -result;
 
 	return result;
 }
@@ -164,6 +168,12 @@ QInt QInt::operator % (QInt other) const
 
 	char signBitA = result.getBit(MaxBitIndex);
 	char signBitB = other.getBit(MaxBitIndex);
+
+	QInt minQInt = 1;
+	minQInt = minQInt << MaxBitIndex;
+
+	if (*this == minQInt)
+		return (QInt)2 * ((*this >> 1) % other);
 
 	if (signBitA && signBitB)
 		return -((-*this) % (-other));
@@ -250,15 +260,18 @@ QInt QInt::operator~() const
 	return result;
 }
 
-QInt QInt::operator<<(int amount) const
+QInt QInt::operator<<(QInt amount) const
 {
-	if (amount > MaxBitIndex)
+	if (amount.data[MaxArrayIndex - 1] != 0 || amount.data[MaxArrayIndex - 2] != 0 || amount.data[MaxArrayIndex - 3] != 0)
+		return 0;
+
+	if (amount.data[MaxArrayIndex] > MaxBitIndex)
 		return 0;
 	QInt result = *this;
 
-	for (int a = 0; a < amount; a += 31)
+	for (int a = 0; a < amount.data[MaxArrayIndex]; a += 31)
 	{
-		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
+		int tempAmount = (amount.data[MaxArrayIndex] - a) > 31 ? 31 : amount.data[MaxArrayIndex] - a;
 
 		for (int i = 0; i <= MaxArrayIndex; i++)
 		{
@@ -274,16 +287,19 @@ QInt QInt::operator<<(int amount) const
 	return result;
 }
 
-QInt QInt::operator>>(int amount) const
+QInt QInt::operator>>(QInt amount) const
 {
-	if (amount > MaxBitIndex)
+	if (amount.data[MaxArrayIndex - 1] != 0 || amount.data[MaxArrayIndex - 2] != 0 || amount.data[MaxArrayIndex - 3] != 0)
+		return 0;
+
+	if (amount.data[MaxArrayIndex] > MaxBitIndex)
 		return -1;
 	QInt result = *this;
 
-	for (int a = 0; a < amount; a += 31)
+	for (int a = 0; a < amount.data[MaxArrayIndex]; a += 31)
 	{
-		int tempAmount = (amount - a) > 31 ? 31 : amount - a;
-
+		int tempAmount = (amount.data[MaxArrayIndex] - a) > 31 ? 31 : amount.data[MaxArrayIndex] - a;
+ 
 		for (int i = MaxArrayIndex; i >= 0; i--)
 		{
 			if (i > 0)
@@ -529,14 +545,6 @@ void QInt::fromBinary(string bin)
 		if (bin[i] == '1')
 			setBit(bitIndex, 1);
 		bitIndex++;
-	}
-
-	if (bin[0] == '1')
-	{
-		while (bitIndex >= MaxBitIndex)
-		{
-			setBit(bitIndex++, 1);
-		}
 	}
 }
 

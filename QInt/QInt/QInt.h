@@ -66,9 +66,9 @@ public:
 		--------------------
 	*/
 	//Left shift logical by amount bit(s)
-	QInt operator << (int amount) const;
+	QInt operator << (QInt amount) const;
 	//Left shift arithmetic by amount bit(s)
-	QInt operator >> (int amount) const;
+	QInt operator >> (QInt amount) const;
 	//Rotate left by 1 bit
 	QInt rol(int amount) const;
 	QInt ror(int amount) const;
