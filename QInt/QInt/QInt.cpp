@@ -117,17 +117,22 @@ QInt QInt::operator/(QInt other) const
 	char signBitA = result.getBit(MaxBitIndex);
 	char signBitB = other.getBit(MaxBitIndex);
 
-	if (signBitA && signBitB)
-		return (-*this) / (-other);
-	if (signBitA)
-		return -((-*this) / other);
-	if (signBitB)
-		return -(*this / -other);
+	bool resultSign = signBitA ^ signBitB;
 
-	if (result < other)
-		return QInt();
+	QInt minNumber;
+	minNumber.setBit(MaxBitIndex, 1);
 
-	remainder = signBitA ? -1 : 0;
+	if (signBitA && (*this) != minNumber)
+		result = -*this;
+	if (signBitB && (other) != minNumber)
+		other = -other;
+
+	char compareResult = result.compare(other);
+	if (compareResult == -1)
+		return 0;
+	else if (compareResult == 0)
+		return 1;
+
 	int k = MaxBitIndex;
 	while (k >= 0)
 	{
@@ -146,10 +151,8 @@ QInt QInt::operator/(QInt other) const
 
 		k -= 1;
 	}
-	//if (signBitA || signBitB)
-	//	result = -result;
 
-	return result;
+	return resultSign ? -result : result;
 }
 
 QInt QInt::operator % (QInt other) const
@@ -165,17 +168,21 @@ QInt QInt::operator % (QInt other) const
 	char signBitA = result.getBit(MaxBitIndex);
 	char signBitB = other.getBit(MaxBitIndex);
 
-	if (signBitA && signBitB)
-		return -((-*this) % (-other));
-	if (signBitA)
-		return -((-*this) % other);
-	if (signBitB)
-		return (*this % -other);
+	QInt minNumber;
+	minNumber.setBit(MaxBitIndex, 1);
 
-	if (result < other)
-		return result;
+	if (signBitA && (*this) != minNumber)
+		result = -*this;
+	if (signBitB && (other) != minNumber)
+		other = -other;
 
-	remainder = signBitA ? -1 : 0;
+	char compareResult = result.compare(other);
+
+	if (compareResult == -1)
+		return (*this);
+	else if (compareResult == 0)
+		return 0;
+
 	int k = MaxBitIndex;
 	while (k >= 0)
 	{
@@ -194,7 +201,7 @@ QInt QInt::operator % (QInt other) const
 		k -= 1;
 	}
 
-	return remainder;
+	return signBitA ? -remainder : remainder;
 }
 
 QInt QInt::operator-() const
@@ -457,10 +464,11 @@ string QInt::toBinary() const
 
 string QInt::toDec() const
 {
-	QInt temp = getBit(MaxBitIndex) ? (-(*this)) : (*this);
+	bool isNegative = this->getBit(MaxBitIndex);
+	QInt temp = *this;
 
 	vector<int> resultArr;
-	while (temp > 0)
+	while (temp != 0)
 	{
 		resultArr.push_back((temp % 1000000000).toInt());
 		temp = temp / 1000000000;
@@ -474,11 +482,9 @@ string QInt::toDec() const
 
 	for (int i = resultArr.size() - 2; i >= 0; i--)
 	{
-		ss << setw(9) << setfill('0') << resultArr[i];
+		ss << setw(9) << setfill('0') << (isNegative ? -resultArr[i] : resultArr[i]);
 	}
 
-	if (getBit(MaxBitIndex))
-		return "-" + ss.str();
 	return ss.str();
 }
 
@@ -529,14 +535,6 @@ void QInt::fromBinary(string bin)
 		if (bin[i] == '1')
 			setBit(bitIndex, 1);
 		bitIndex++;
-	}
-
-	if (bin[0] == '1')
-	{
-		while (bitIndex >= MaxBitIndex)
-		{
-			setBit(bitIndex++, 1);
-		}
 	}
 }
 

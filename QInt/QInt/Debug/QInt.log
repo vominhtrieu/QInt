@@ -1,4 +1,4 @@
 ﻿  QInt.cpp
-C:\Users\Trieu\source\repos\QInt\QInt\QInt\QInt.cpp(561,18): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Trieu\source\repos\QInt\QInt\QInt\QInt.cpp(570,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Trieu\source\repos\QInt\QInt\QInt\QInt.cpp(572,18): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Trieu\source\repos\QInt\QInt\QInt\QInt.cpp(581,16): warning C4018: '<': signed/unsigned mismatch
   QInt.vcxproj -> C:\Users\Trieu\source\repos\QInt\QInt\Debug\QInt.exe

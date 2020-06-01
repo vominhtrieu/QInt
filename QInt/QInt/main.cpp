@@ -14,10 +14,8 @@ int main(int argc, char* argv[])
 
 	string tempLine;
 	string tempArg;
-	int i = 0;
 	while (!inputFile.eof())
 	{
-		i++;
 		try
 		{
 			getline(inputFile, tempLine);

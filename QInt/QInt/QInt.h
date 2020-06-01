@@ -10,11 +10,9 @@ class QInt
 {
 private:
 	uint data[DataSize];
-
 public:
 	QInt();
 	QInt(int n);
-
 	/*
 		--------------------
 		---Manipulate bit---
@@ -31,7 +29,7 @@ public:
 		---Basic operator---
 		--------------------
 	*/
-	//Add this object with the other
+	//Add this object with the other	
 	QInt operator + (QInt other) const;
 	//Subtract this object with the other
 	QInt operator - (QInt other) const;
