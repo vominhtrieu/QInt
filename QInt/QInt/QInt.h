@@ -76,6 +76,7 @@ public:
 		--Compare operator--
 		--------------------
 	*/
+	//Return -1 if *this < other, 1 if *this > other otherwise return 0
 	int compare(QInt other) const;
 	//Return is this object greater than the other
 	bool operator > (QInt other) const;

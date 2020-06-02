@@ -131,7 +131,7 @@ QInt QInt::operator/(QInt other) const
 	if (compareResult == -1)
 		return 0;
 	else if (compareResult == 0)
-		return 1;
+		return resultSign ? -1 : 1;
 
 	int k = MaxBitIndex;
 	while (k >= 0)
@@ -284,7 +284,7 @@ QInt QInt::operator<<(int amount) const
 QInt QInt::operator>>(int amount) const
 {
 	if (amount > MaxBitIndex)
-		return -1;
+		return this->getBit(MaxBitIndex) ? -1 : 0;
 	QInt result = *this;
 
 	for (int a = 0; a < amount; a += 31)
