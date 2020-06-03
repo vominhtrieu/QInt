@@ -35,9 +35,11 @@ public:
 	QInt operator - (QInt other) const;
 	//Multiply this object with the other
 	QInt operator * (QInt other) const;
-	//Divide this object with the other
+	//Divide this object with the other and return quotient and remainder(by reference)
+	QInt divide(QInt other, QInt& remainder);
+	//Divide this object with the other and return quotient
 	QInt operator / (QInt other) const;
-	//Modulo this object with other
+	//Divide this object with the other and return remainder
 	QInt operator % (QInt other) const;
 
 	//Change sign of QInt number
@@ -67,7 +69,7 @@ public:
 	QInt operator << (int amount) const;
 	//Left shift arithmetic by amount bit(s)
 	QInt operator >> (int amount) const;
-	//Rotate left by 1 bit
+	//Rotate left by amount bit
 	QInt rol(int amount) const;
 	QInt ror(int amount) const;
 
@@ -76,7 +78,7 @@ public:
 		--Compare operator--
 		--------------------
 	*/
-	//Return -1 if *this < other, 1 if *this > other otherwise return 0
+	//Return -1 if *this < other, 1 if *this > other, otherwise return 0
 	int compare(QInt other) const;
 	//Return is this object greater than the other
 	bool operator > (QInt other) const;

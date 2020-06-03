@@ -104,9 +104,69 @@ QInt QInt::operator*(QInt other) const
 	return Q;
 }
 
+QInt QInt::divide(QInt other, QInt& remainder)
+{
+	//Throw exception if other == 0
+	if (other == 0)
+		throw "Division by zero";
+
+	//Restoring Division Algorithm
+	QInt result = *this;
+	remainder = 0;
+
+	char signBitA = result.getBit(MaxBitIndex);
+	char signBitB = other.getBit(MaxBitIndex);
+
+	bool resultSign = signBitA ^ signBitB;
+
+	QInt minNumber;
+	minNumber.setBit(MaxBitIndex, 1);
+
+	if (signBitA && (*this) != minNumber)
+		result = -*this;
+	if (signBitB && (other) != minNumber)
+		other = -other;
+
+	char compareResult = result.compare(other);
+
+	if (compareResult == -1)
+	{
+		remainder = *this;
+		return 0;
+	}
+	else if (compareResult == 0)
+	{
+		return resultSign ? -1 : 1;
+	}
+
+	int k = MaxBitIndex;
+	while (k >= 0)
+	{
+		remainder = remainder << 1;
+		remainder.setBit(0, result.getBit(MaxBitIndex));
+		result = result << 1;
+		remainder = remainder - other;
+
+		if (remainder.getBit(MaxBitIndex))
+		{
+			result.setBit(0, 0);
+			remainder = remainder + other;
+		}
+		else
+			result.setBit(0, 1);
+
+		k -= 1;
+	}
+
+	if (signBitA)
+		remainder = -remainder;
+
+	return resultSign ? -result : result;
+}
+
 QInt QInt::operator/(QInt other) const
 {
-	//throw exception id other == 0
+	//Throw exception if other == 0
 	if (other == 0)
 		throw "Division by zero";
 
@@ -157,7 +217,7 @@ QInt QInt::operator/(QInt other) const
 
 QInt QInt::operator % (QInt other) const
 {
-	//throw exception id other == 0
+	//Throw exception if other == 0
 	if (other == 0)
 		throw "Division by zero";
 
@@ -206,15 +266,7 @@ QInt QInt::operator % (QInt other) const
 
 QInt QInt::operator-() const
 {
-	QInt temp = *this;
-
-	for (int i = 0; i < DataSize; i++)
-	{
-		temp.data[i] = ~data[i];
-	}
-
-	temp = temp + (QInt)1;
-	return temp;
+	return ~(*this) + 1;
 }
 
 QInt QInt::operator&(QInt other) const
@@ -224,6 +276,7 @@ QInt QInt::operator&(QInt other) const
 	{
 		result.data[i] &= other.data[i];
 	}
+
 	return result;
 }
 
@@ -466,12 +519,14 @@ string QInt::toDec() const
 {
 	bool isNegative = this->getBit(MaxBitIndex);
 	QInt temp = *this;
+	QInt remainder;
 
 	vector<int> resultArr;
 	while (temp != 0)
 	{
-		resultArr.push_back((temp % 1000000000).toInt());
-		temp = temp / 1000000000;
+		//Use both / and % in one statement will give better performance
+		temp = temp.divide(1000000000, remainder);
+		resultArr.push_back(remainder.toInt());
 	}
 
 	stringstream ss;
@@ -495,16 +550,17 @@ string QInt::toHex() const
 	QInt temp = *this;
 
 	int k = MaxBitIndex;
+	int shiftAmount = MaxBitIndex - 3;
 	while (k > 0)
 	{
 		k -= 4;
-		uint num = (temp >> (MaxBitIndex - 3)).data[MaxArrayIndex] & 15;
+		uint num = (temp >> shiftAmount).data[MaxArrayIndex] & 15;
 		char ch;
 
 		if (num < 10)
 			ch = num + '0';
 		else
-			ch = num + 'A' - 10;
+			ch = num + 55; //55 is ascii value of 'A' - 10
 
 		result.push_back(ch);
 		temp = temp << 4;
@@ -554,6 +610,7 @@ void QInt::fromDec(string dec)
 	int bitIndex = 0;
 	while (dec != "0" && bitIndex <= MaxBitIndex)
 	{
+		//dec[dec.length() - 1] & 1 tell whether dec is even or not, if even remainder is 0 so bit is 0 and vice-versal
 		result.setBit(bitIndex++, dec[dec.length() - 1] & 1);
 		dec = divideBy2(dec);
 	}
@@ -564,27 +621,24 @@ void QInt::fromDec(string dec)
 
 void QInt::fromHex(string hex)
 {
-	QInt result;
-
 	hex.erase(0, hex.find_first_not_of('0'));
 
 	int hexIndex = 0;
+	int maxHexIndex = hex.length() - 1;
+	uint bits;
+
 	while (hexIndex < hex.length())
 	{
-		uint bits;
 		if (hex[hexIndex] >= '0' && hex[hexIndex] <= '9')
 			bits = hex[hexIndex] - '0';
 		else
-			bits = hex[hexIndex] - 'A' + 10;
+			bits = hex[hexIndex] - 55; //55 is ascii value of 'A' - 10
 
-		result.data[MaxArrayIndex] |= bits;
-		if (hexIndex < hex.length() - 1)
-			result = result << 4;
-
+		this->data[MaxArrayIndex] |= bits;
+		if (hexIndex < maxHexIndex)
+			*this = (*this) << 4;
 		hexIndex++;
 	}
-
-	(*this) = result;
 }
 
 ostream& operator<<(ostream& out, const QInt& number)
