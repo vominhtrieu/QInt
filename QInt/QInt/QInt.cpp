@@ -142,9 +142,11 @@ QInt QInt::divide(QInt other, QInt& remainder)
 	int k = MaxBitIndex;
 	while (k >= 0)
 	{
+
 		remainder = remainder << 1;
 		remainder.setBit(0, result.getBit(MaxBitIndex));
 		result = result << 1;
+
 		remainder = remainder - other;
 
 		if (remainder.getBit(MaxBitIndex))
@@ -196,15 +198,17 @@ QInt QInt::operator/(QInt other) const
 	int k = MaxBitIndex;
 	while (k >= 0)
 	{
+		//shift left [A, Q]
 		remainder = remainder << 1;
 		remainder.setBit(0, result.getBit(MaxBitIndex));
 		result = result << 1;
+		//A = A - M
 		remainder = remainder - other;
 
 		if (remainder.getBit(MaxBitIndex))
 		{
 			result.setBit(0, 0);
-			remainder = remainder + other;
+			remainder = remainder + other;  //restore
 		}
 		else
 			result.setBit(0, 1);
@@ -221,9 +225,9 @@ QInt QInt::operator % (QInt other) const
 	if (other == 0)
 		throw "Division by zero";
 
-	//Restoring Division Algorithm
-	QInt result = *this;
-	QInt remainder;
+	//Also use Restoring Division Algorithm, but return A
+	QInt result = *this; //Q
+	QInt remainder; //A
 
 	char signBitA = result.getBit(MaxBitIndex);
 	char signBitB = other.getBit(MaxBitIndex);
