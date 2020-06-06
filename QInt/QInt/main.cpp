@@ -5,7 +5,6 @@ int main(int argc, char* argv[])
 {
 	if (argc != 3)
 		return 0;
-
 	//argv[0] executable file name, argv[1] input file name, argv[2] output file name
 	ifstream inputFile(argv[1]);
 	ofstream outputFile(argv[2]);

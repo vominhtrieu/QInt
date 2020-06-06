@@ -121,8 +121,14 @@ QInt QInt::divide(QInt other, QInt& remainder)
 
 	QInt minNumber;
 	minNumber.setBit(MaxBitIndex, 1);
-
-	if (signBitA && (*this) != minNumber)
+	if (*this == minNumber)
+	{
+		if (other == -1)
+			throw "Overflow";
+		else if (other == 1)
+			return *this;
+	}
+	else if (signBitA)
 		result = -*this;
 	if (signBitB && (other) != minNumber)
 		other = -other;
@@ -184,7 +190,14 @@ QInt QInt::operator/(QInt other) const
 	QInt minNumber;
 	minNumber.setBit(MaxBitIndex, 1);
 
-	if (signBitA && (*this) != minNumber)
+	if (*this == minNumber)
+	{
+		if (other == -1)
+			throw "Overflow";
+		else if (other == 1)
+			return *this;
+	}
+	else if (signBitA)
 		result = -*this;
 	if (signBitB && (other) != minNumber)
 		other = -other;
@@ -618,7 +631,10 @@ void QInt::fromDec(string dec)
 		result.setBit(bitIndex++, dec[dec.length() - 1] & 1);
 		dec = divideBy2(dec);
 	}
-	if (isNegative)
+	QInt min;
+	min.setBit(MaxBitIndex, 1);
+
+	if (isNegative && result != min)
 		result = -result;
 	(*this) = result;
 }

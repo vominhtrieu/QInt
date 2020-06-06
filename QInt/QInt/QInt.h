@@ -11,6 +11,7 @@ class QInt
 private:
 	uint data[DataSize];
 public:
+	static QInt MIN;
 	QInt();
 	QInt(int n);
 	/*

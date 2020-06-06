@@ -1,10 +1,3 @@
-﻿  CommandLineArguments.cpp
-  main.cpp
-  QInt.cpp
-e:\qint\qint\qint\qint.cpp(630): warning C4018: '<': signed/unsigned mismatch
-  StringFunction.cpp
-e:\qint\qint\qint\stringfunction.cpp(19): warning C4018: '<': signed/unsigned mismatch
-e:\qint\qint\qint\stringfunction.cpp(43): warning C4018: '<': signed/unsigned mismatch
-e:\qint\qint\qint\stringfunction.cpp(50): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  QInt.vcxproj -> E:\QInt\QInt\Debug\QInt.exe
+﻿  QInt.cpp
+C:\Users\Trieu\source\repos\QInt\QInt\QInt\QInt.cpp(650,18): warning C4018: '<': signed/unsigned mismatch
+  QInt.vcxproj -> C:\Users\Trieu\source\repos\QInt\QInt\Debug\QInt.exe
