@@ -66,6 +66,9 @@ QInt QInt::operator-(QInt other) const
 
 QInt QInt::operator*(QInt other) const
 {
+	//Fix problem when MIN * 1
+	if (other == 1)
+		return *this;
 	//Booth's algorithm
 	QInt A;
 	QInt Q = other;
